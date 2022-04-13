@@ -11,7 +11,7 @@ import pandas as pd
 # "Pivot.M.Classic.S3","Pivot.M.Classic.S2","Pivot.M.Classic.S1","Pivot.M.Classic.Middle","Pivot.M.Classic.R1","Pivot.M.Classic.R2","Pivot.M.Classic.R3","Pivot.M.Fibonacci.S3","Pivot.M.Fibonacci.S2","Pivot.M.Fibonacci.S1","Pivot.M.Fibonacci.Middle","Pivot.M.Fibonacci.R1","Pivot.M.Fibonacci.R2","Pivot.M.Fibonacci.R3","Pivot.M.Camarilla.S3","Pivot.M.Camarilla.S2","Pivot.M.Camarilla.S1","Pivot.M.Camarilla.Middle","Pivot.M.Camarilla.R1","Pivot.M.Camarilla.R2","Pivot.M.Camarilla.R3","Pivot.M.Woodie.S3","Pivot.M.Woodie.S2","Pivot.M.Woodie.S1","Pivot.M.Woodie.Middle","Pivot.M.Woodie.R1","Pivot.M.Woodie.R2","Pivot.M.Woodie.R3","Pivot.M.Demark.S1","Pivot.M.Demark.Middle","Pivot.M.Demark.R1",
 # "open", "P.SAR", "BB.lower", "BB.upper", "AO[2]", "volume", "change", "low", "high"]
 
-from indicators import moving_averages, oscillators, pivots
+from indicators import moving_averages, oscillators, pivots, additional_indicators
 
 
 def get_df_analysis(df_in, indicators_key, screener, symbol, exchange, interval):
@@ -23,6 +23,16 @@ def get_df_analysis(df_in, indicators_key, screener, symbol, exchange, interval)
     df['close'] = df_in['Close']
 
     #df = pd.concat([df, df2], axis=1)
+
+    # ADDITIONAL INDICATORS
+    df_additional_indicators = pd.DataFrame()
+    additional_indicators.add_MOMENTUM_TRIX(df, df_additional_indicators)
+    additional_indicators.add_VOLUME_OBV(df, df_additional_indicators)
+    additional_indicators.add_VOLATILITY_ATR(df, df_additional_indicators)
+    additional_indicators.add_SUPER_TREND(df, df_additional_indicators)
+    additional_indicators.add_SENTIMENT_FNG(df, df_additional_indicators)
+    additional_indicators.add_MOMENTUM_CHOP(df, df_additional_indicators)
+    additional_indicators.add_MOMENTUM_STC(df, df_additional_indicators)
 
     # OSCILLATORS
     oscillators.add_OSCILLATORS_RSI(df)
