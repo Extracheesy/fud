@@ -65,6 +65,7 @@ def add_PIVOTS_CLASSIC(df):
     df['Pivot.M.Classic.R3'] = PPClassic['PP'] + 2 * (PPClassic['HIGHprev'] - PPClassic['LOWprev'])
     df['Pivot.M.Classic.S3'] = PPClassic['PP'] - 2 * (PPClassic['HIGHprev'] - PPClassic['LOWprev'])
     df['Pivot.M.Classic.Middle'] = PPClassic['PP']
+    return df
 
 def add_PIVOTS_FIBONACCI(df):
     list_index = df.index.tolist()
@@ -110,7 +111,7 @@ def add_PIVOTS_FIBONACCI(df):
     # S3 = PP - (HIGHprev - LOWprev)
     df['Pivot.M.Fibonacci.S3'] = PPClassic['PP'] - (PPClassic['HIGHprev'] - PPClassic['LOWprev'])
     df['Pivot.M.Fibonacci.Middle'] = PPClassic['PP']
-
+    return df
 
 def add_PIVOTS_CAMARILLA(df):
     list_index = df.index.tolist()
@@ -156,6 +157,7 @@ def add_PIVOTS_CAMARILLA(df):
     # S3 = CLOSEprev - 1.1 * (HIGHprev - LOWprev) / 4
     df['Pivot.M.Camarilla.S3'] = PPClassic['CLOSEprev'] - 1.1 * (PPClassic['HIGHprev'] - PPClassic['LOWprev']) / 4
     df['Pivot.M.Camarilla.Middle'] = PPClassic['PP']
+    return df
 
 def add_PIVOTS_WOODIE(df):
     list_index = df.index.tolist()
@@ -201,6 +203,7 @@ def add_PIVOTS_WOODIE(df):
     # S3 =  LOWprev - 2 * (HIGHprev - PP)
     df['Pivot.M.Woodie.S3'] = PPClassic['LOWprev'] - 2 * (PPClassic['HIGHprev'] - PPClassic['PP'])
     df['Pivot.M.Woodie.Middle'] = PPClassic['PP']
+    return df
 
 def add_PIVOTS_DM(df):
 
@@ -253,3 +256,4 @@ def add_PIVOTS_DM(df):
     df['Pivot.M.Demark.S1'] = PPClassic['X'] / 2 - PPClassic['HIGHprev']
 
     df['Pivot.M.Demark.Middle'] = PPClassic['PP']
+    return df

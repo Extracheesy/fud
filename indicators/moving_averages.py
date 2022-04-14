@@ -20,7 +20,7 @@ def add_MOVING_AVERAGES_EMA(df):
     df["EMA50"] = talib.EMA(df['close'], timeperiod=50)
     df["EMA100"] = talib.EMA(df['close'], timeperiod=100)
     df["EMA200"] = talib.EMA(df['close'], timeperiod=200)
-
+    return df
 
 def add_MOVING_AVERAGES_SMA(df):
     df["SMA5"] = talib.SMA(df['close'], timeperiod=5)
@@ -30,11 +30,11 @@ def add_MOVING_AVERAGES_SMA(df):
     df["SMA50"] = talib.SMA(df['close'], timeperiod=50)
     df["SMA100"] = talib.SMA(df['close'], timeperiod=100)
     df["SMA200"] = talib.SMA(df['close'], timeperiod=200)
-
+    return df
 
 def add_MOVING_AVERAGES_ICHIMOKU8BLINE(df):
     Ichimoku.get_ICHIMOKU(df)
-
+    return df
 
 def add_MOVING_AVERAGES_VWMA(df):
     # Volume Weighted Moving Average (20)
@@ -49,7 +49,7 @@ def add_MOVING_AVERAGES_VWMA(df):
     df['Rec.VWMA'] = 0
     df['Rec.VWMA'] = np.where(df['VWMA'] < df['close'], 1, df['Rec.VWMA'])
     df['Rec.VWMA'] = np.where(df['VWMA'] > df['close'], -1, df['Rec.VWMA'])
-
+    return df
 
 def add_MOVING_AVERAGES_HMA(df):
     # Hull Moving Average
@@ -67,14 +67,19 @@ def add_MOVING_AVERAGES_HMA(df):
     df['Rec.HullMA9'] = 0
     df['Rec.HullMA9'] = np.where(df['HullMA9'] < df['close'], 1, df['Rec.HullMA9'])
     df['Rec.HullMA9'] = np.where(df['HullMA9'] > df['close'], -1, df['Rec.HullMA9'])
-
+    return df
 
 def add_BBANDS(df):
     df_tmp = pd.DataFrame()
     df['BB.upper'], df_tmp['middle_to_drop'], df['BB.lower'] = talib.BBANDS(df['close'], timeperiod=5, nbdevup=2,
                                                                             nbdevdn=2, matype=0)
     # df = df.drop(['middle_to_drop'], axis=1)
-
+    return df
 
 def add_PSAR(df):
     df['P.SAR'] = talib.SAR(df['high'], df['low'], acceleration=0, maximum=0)
+    return df
+
+def add_PCTCHANGE(df):
+    df['change'] = df['close'].pct_change()
+    return df

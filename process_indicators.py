@@ -13,6 +13,26 @@ import pandas as pd
 
 from indicators import moving_averages, oscillators, pivots, additional_indicators
 
+def get_df_additional_analysis(df_in):
+    df = pd.DataFrame()
+    df['open'] = df_in['Open']
+    df['high'] = df_in['High']
+    df['low'] = df_in['Low']
+    df['volume'] = df_in['Volume']
+    df['close'] = df_in['Close']
+
+    # ADDITIONAL INDICATORS
+    df_additional_indicators = pd.DataFrame()
+    df_additional_indicators = additional_indicators.add_MOMENTUM_TRIX(df, df_additional_indicators)
+    df_additional_indicators = additional_indicators.add_VOLUME_OBV(df, df_additional_indicators)
+    df_additional_indicators = additional_indicators.add_VOLATILITY_ATR(df, df_additional_indicators)
+    df_additional_indicators = additional_indicators.add_SUPER_TREND(df, df_additional_indicators)
+    df_additional_indicators = additional_indicators.add_SENTIMENT_FNG(df, df_additional_indicators)
+    df_additional_indicators = additional_indicators.add_MOMENTUM_CHOP(df, df_additional_indicators)
+    df_additional_indicators = additional_indicators.add_MOMENTUM_STC(df, df_additional_indicators)
+
+    return df_additional_indicators
+
 
 def get_df_analysis(df_in, indicators_key, screener, symbol, exchange, interval):
     df = pd.DataFrame(columns=indicators_key)
@@ -22,46 +42,35 @@ def get_df_analysis(df_in, indicators_key, screener, symbol, exchange, interval)
     df['volume'] = df_in['Volume']
     df['close'] = df_in['Close']
 
-    #df = pd.concat([df, df2], axis=1)
-
-    # ADDITIONAL INDICATORS
-    df_additional_indicators = pd.DataFrame()
-    additional_indicators.add_MOMENTUM_TRIX(df, df_additional_indicators)
-    additional_indicators.add_VOLUME_OBV(df, df_additional_indicators)
-    additional_indicators.add_VOLATILITY_ATR(df, df_additional_indicators)
-    additional_indicators.add_SUPER_TREND(df, df_additional_indicators)
-    additional_indicators.add_SENTIMENT_FNG(df, df_additional_indicators)
-    additional_indicators.add_MOMENTUM_CHOP(df, df_additional_indicators)
-    additional_indicators.add_MOMENTUM_STC(df, df_additional_indicators)
-
     # OSCILLATORS
-    oscillators.add_OSCILLATORS_RSI(df)
-    oscillators.add_OSCILLATORS_STOCH(df)
-    oscillators.add_OSCILLATORS_CCI(df)
-    oscillators.add_OSCILLATORS_ADX(df)
-    oscillators.add_OSCILLATORS_AO(df)
-    oscillators.add_OSCILLATORS_MOM(df)
-    oscillators.add_OSCILLATORS_MACD(df)
-    oscillators.add_OSCILLATORS_STOCH_RSI(df)
-    oscillators.add_OSCILLATORS_WILLIAMS_PERCENT_RANGE(df)
-    oscillators.add_OSCILLATORS_EBBP(df)
-    oscillators.add_OSCILLATORS_UO(df)
+    df = oscillators.add_OSCILLATORS_RSI(df)
+    df = oscillators.add_OSCILLATORS_STOCH(df)
+    df = oscillators.add_OSCILLATORS_CCI(df)
+    df = oscillators.add_OSCILLATORS_ADX(df)
+    df = oscillators.add_OSCILLATORS_AO(df)
+    df = oscillators.add_OSCILLATORS_MOM(df)
+    df = oscillators.add_OSCILLATORS_MACD(df)
+    df = oscillators.add_OSCILLATORS_STOCH_RSI(df)
+    df = oscillators.add_OSCILLATORS_WILLIAMS_PERCENT_RANGE(df)
+    df = oscillators.add_OSCILLATORS_EBBP(df)
+    df = oscillators.add_OSCILLATORS_UO(df)
 
     # MOVING AVERAGES
-    moving_averages.add_MOVING_AVERAGES_EMA(df)
-    moving_averages.add_MOVING_AVERAGES_SMA(df)
-    moving_averages.add_MOVING_AVERAGES_ICHIMOKU8BLINE(df)
-    moving_averages.add_MOVING_AVERAGES_VWMA(df)
-    moving_averages.add_MOVING_AVERAGES_HMA(df)
-    moving_averages.add_BBANDS(df)
-    moving_averages.add_PSAR(df)
+    df = moving_averages.add_MOVING_AVERAGES_EMA(df)
+    df = moving_averages.add_MOVING_AVERAGES_SMA(df)
+    df = moving_averages.add_MOVING_AVERAGES_ICHIMOKU8BLINE(df)
+    df = moving_averages.add_MOVING_AVERAGES_VWMA(df)
+    df = moving_averages.add_MOVING_AVERAGES_HMA(df)
+    df = moving_averages.add_BBANDS(df)
+    df = moving_averages.add_PSAR(df)
+    df = moving_averages.add_PCTCHANGE(df)
 
     # PIVOTS
-    pivots.add_PIVOTS_CLASSIC(df)
-    pivots.add_PIVOTS_FIBONACCI(df)
-    pivots.add_PIVOTS_CAMARILLA(df)
-    pivots.add_PIVOTS_WOODIE(df)
-    pivots.add_PIVOTS_DM(df)
+    df = pivots.add_PIVOTS_CLASSIC(df)
+    df = pivots.add_PIVOTS_FIBONACCI(df)
+    df = pivots.add_PIVOTS_CAMARILLA(df)
+    df = pivots.add_PIVOTS_WOODIE(df)
+    df = pivots.add_PIVOTS_DM(df)
 
     df.reset_index(inplace=True, drop=True)
     lst_columns = df.columns.tolist()

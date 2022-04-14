@@ -4,8 +4,6 @@ from datetime import datetime
 import yfinance as yf
 import math
 
-
-
 def Supertrend(df, atr_period, multiplier):
     high = df['high']
     low = df['low']

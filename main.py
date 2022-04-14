@@ -53,11 +53,12 @@ if __name__ == '__main__':
     df_indicators_discret = pd.DataFrame()
     df_indicators_brut = pd.DataFrame()
 
+    df_additional_indicators = process_indicators.get_df_additional_analysis(df)
+
     len_df = len(df) - 200
     for i in range(len_df):
         current_date = df.index.tolist()[-1]
         indicators = process_indicators.get_df_analysis(df, indicators_keys, "crypto", 'BTC/USDT', "binance", '1d')
-        # indicator_analysis = TV_analysis.calculate(indicators, indicators_keys, "crypto", 'BTC/USDT', "binance", '1d')
         indicator_analysis = process_recom.calculate(indicators, indicators_keys, "crypto", 'BTC/USDT', "binance", '1d')
         df_summary_level_0_new, df_summary_level_1_new, df_indicators_discret_new, df_indicators_brut_new = tools.anlysis_to_df(indicator_analysis, current_date)
         df_summary_level_0 = pd.concat([df_summary_level_0_new, df_summary_level_0])
@@ -69,6 +70,7 @@ if __name__ == '__main__':
         if (i % 50 == 0):
             print("remaining: ",len_df - i, "len df: ",len(df))
 
+    df_additional_indicators.to_csv('OUTPUT/' + pair + '_df_additional_indicators' + '.csv')
     df_indicators_brut.to_csv('OUTPUT/' + pair + '_df_indicators_brut' + '.csv')
     df_indicators_discret.to_csv('OUTPUT/' + pair + '_df_indicators_discret' + '.csv')
     df_summary_level_1.to_csv('OUTPUT/' + pair + '_df_summary_level_1' + '.csv')

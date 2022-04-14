@@ -1,4 +1,5 @@
 import talib
+import ta
 from ta.momentum import awesome_oscillator
 from finta import TA
 import pandas as pd
@@ -6,14 +7,59 @@ import numpy as np
 import super_trend_indicator, custom_indicators
 
 def add_MOMENTUM_TRIX(df, df_trix):
-    df_trix['trix'] = talib.TRIX(df['close'], timeperiod=30)
+    # when the TRIX crosses above the zero line it gives a buy signal, and when it closes below the zero line, it gives a sell signal.
+
+    # trixLength = 30
+    trixLength = 9
+    trixSignal = 21
+
+    TALIB = True
+    if TALIB == True:
+        df_trix['TRIX_PCT'] = talib.TRIX(df['close'], timeperiod=trixLength)
+    else:
+        df_trix['TRIX'] = ta.trend.ema_indicator(ta.trend.ema_indicator(ta.trend.ema_indicator(close=df['close'],
+                                                                                               window=trixLength),
+                                                                        window=trixLength),
+                                                 window=trixLength)
+        df_trix['TRIX_PCT'] = df_trix["TRIX"].pct_change() * 100
+
+    df_trix['TRIX_SIGNAL'] = ta.trend.sma_indicator(df_trix['TRIX_PCT'], trixSignal)
+    df_trix['trix_h'] = df_trix['TRIX_PCT'] - df_trix['TRIX_SIGNAL']
+
+    df_trix['STOCH_RSI'] = ta.momentum.stochrsi(close=df['close'], window=14, smooth1=3, smooth2=3)
+
+    df_trix['0.2'] = 0.2
+    df_trix['0.82'] = 0.82
+    df_trix['0'] = 0
+
+    df_trix['buy_condition'] = (df_trix['trix_h'] > df_trix['0']) & (df_trix['STOCH_RSI'] <= df_trix['0.82'])
+    df_trix['sell_condition'] = (df_trix['trix_h'] < df_trix['0']) & (df_trix['STOCH_RSI'] >= df_trix['0.2'])
+
+    df_trix['Rec.trix'] = 0
+    df_trix['Rec.trix'] = np.where(df_trix['buy_condition'], 1, df_trix['Rec.trix'])
+    df_trix['Rec.trix'] = np.where(df_trix['sell_condition'], -1, df_trix['Rec.trix'])
+
+    df_trix = df_trix.drop(['0.2'], axis=1)
+    df_trix = df_trix.drop(['0.82'], axis=1)
+    df_trix = df_trix.drop(['0'], axis=1)
+    df_trix = df_trix.drop(['buy_condition'], axis=1)
+    df_trix = df_trix.drop(['sell_condition'], axis=1)
+    df_trix = df_trix.drop(['TRIX_PCT'], axis=1)
+    df_trix = df_trix.drop(['TRIX_SIGNAL'], axis=1)
+    df_trix = df_trix.drop(['STOCH_RSI'], axis=1)
+
+    return df_trix
 
 # On Balance Volume
 def add_VOLUME_OBV(df, df_obv):
     df_obv['obv'] = talib.OBV(df['close'], df['volume'])
 
+    return df_obv
+
 def add_VOLATILITY_ATR(df, df_atr):
     df_atr['atr'] = talib.ATR(df['high'], df['low'], df['close'], timeperiod=14)
+
+    return df_atr
 
 def add_SUPER_TREND(df, df_super_trend):
     atr_period = 10
@@ -24,9 +70,12 @@ def add_SUPER_TREND(df, df_super_trend):
     df_super_trend['Final Lowerband'] = df_s_trend['Final Lowerband']
     df_super_trend['Final Upperband'] = df_s_trend['Final Upperband']
 
+    return df_super_trend
 
 def add_SENTIMENT_FNG(df, df_fear):
     df_fear['fear'] = custom_indicators.fear_and_greed(df['close'])
+
+    return df_fear
 
 def add_MOMENTUM_CHOP(df, df_chop):
     # Choppiness indicator
@@ -49,6 +98,7 @@ def add_MOMENTUM_CHOP(df, df_chop):
     df_chop = df_chop.drop(['61.8'], axis=1)
     df_chop = df_chop.drop(['38.2'], axis=1)
 
+    return df_chop
 
 # Schaff Trend Cycle
 def add_MOMENTUM_STC(df, df_stc):
@@ -74,3 +124,5 @@ def add_MOMENTUM_STC(df, df_stc):
     df_stc = df_stc.drop(['sell_condition'], axis=1)
     df_stc = df_stc.drop(['25'], axis=1)
     df_stc = df_stc.drop(['75'], axis=1)
+
+    return df_stc
