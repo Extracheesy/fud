@@ -7,6 +7,8 @@ import numpy as np
 
 import yfinance as yf
 
+from Historic_Crypto import HistoricalData
+
 binance = ccxt.binance()
 
 def min_ohlcv(dt, pair, limit):
@@ -28,6 +30,9 @@ def ohlcv(dt, pair, period='1d'):
         limit = 24
     elif period == '5m':
         limit = 288
+
+    limit = None
+
     for i in dt:
         start_dt = datetime.strptime(i, "%Y%m%d")
         since = calendar.timegm(start_dt.utctimetuple())*1000
@@ -51,6 +56,14 @@ def ohlcv(dt, pair, period='1d'):
 
 def yf_ohlcv(dt, pair, interval='1d'):
     # df_data = yf.download(tickers=pair, start=dt[0], end=dt[1], interval=interval)
-    df_data = yf.download(tickers=pair, period="3y", interval=interval)
+    # df_data = yf.download(tickers=pair, period="3y", interval=interval)
+    df_data = yf.download(tickers=pair, interval=interval)
 
     return df_data
+
+def Historical_Crypto_ohlcv(dt, pair, interval='1d'):
+    # granularity in seconds(60, 300, 900, 3600, 21600, 86400)(int).
+    # start date: YYYY-MM-DD-HH-MM
+    df = HistoricalData(pair, 60*60, dt[0], dt[1]).retrieve_data()
+
+    return df
