@@ -184,8 +184,7 @@ class super_reversion_strat():
                 "trades": df_trades,
                 "days": df_days
             }
-            toto = dict(list(dict_metrics.items()) + list(dict_data.items()))
-            return toto
+            return dict(list(dict_metrics.items()) + list(dict_data.items()))
         else:
             return True   
         
